@@ -1,15 +1,17 @@
-import java.util.HashMap;
-import java.util.Objects;
 
-public class Epic extends Task{
-    private HashMap<Integer, Subtask> subtasks;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Epic extends Task {
+    private Map<Integer, Subtask> subtasks;
 
     public Epic(String title, String description) {
         super(title, description);
         this.subtasks = new HashMap<>();
+        this.type = Type.EPIC;
     }
 
-    public HashMap<Integer, Subtask> getSubtasks() {
+    public Map<Integer, Subtask> getSubtasks() {
         return subtasks;
     }
 
@@ -17,28 +19,49 @@ public class Epic extends Task{
         this.subtasks = subtasks;
     }
 
-    public void addSubtask(Subtask subtask) {
-        subtasks.put(subtask.getId(), subtask);
+    public Subtask addSubtask(Subtask subtask) {
+        return subtasks.put(subtask.getId(), subtask);
+    }
+
+    public void updateStatus() {
+        Status newStatus = Status.NEW;
+
+        boolean isNew = false;
+        boolean isDone = false;
+        boolean isInProgress = false;
+
+        for (Subtask subtask : subtasks.values()) {
+            if (subtask != null) {
+                switch (subtask.getStatus()) {
+                    case NEW:
+                        isNew = true;
+                        break;
+                    case DONE:
+                        isDone = true;
+                        break;
+                    default:
+                        isInProgress = true;
+                }
+
+                if (isInProgress || (isNew && isDone) ){
+                    newStatus = Status.IN_PROGRESS;
+                } else {
+                    newStatus = isDone ? Status.DONE : Status.NEW;
+                }
+            }
+            this.status = newStatus;
+        }
     }
 
     @Override
     public String toString() {
-        return super.toString() +
-                " subtasks=" + subtasks +
+        return "Epic{" +
+                "type=" + type +
+                ", status=" + status +
+                ", description='" + description + '\'' +
+                ", title='" + title + '\'' +
+                ", id=" + id +
+                ", subtasks=" + subtasks +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Epic epic = (Epic) o;
-        return Objects.equals(subtasks, epic.subtasks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), subtasks);
     }
 }

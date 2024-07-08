@@ -1,14 +1,22 @@
-import java.util.Objects;
 
 public class Task {
-    private int id;
-    private String title;
-    private String description;
-    private Status status;
+    protected int id;
+    protected String title;
+    protected String description;
+    protected Status status;
+    protected Type type;
 
     public Task(String title, String description) {
+        this.type = Type.TASK;
+        this.status = Status.NEW;
         this.title = title;
         this.description = description;
+    }
+
+    public Task(String description, String title, Status status) {
+        this.description = description;
+        this.title = title;
+        this.status = status;
     }
 
     public Status getStatus() {
@@ -43,12 +51,6 @@ public class Task {
         this.description = description;
     }
 
-    //    enum Status {
-//        NEW,
-//        IN_PROGRESS,
-//        DONE
-//    }
-
     @Override
     public String toString() {
         return "Task{" +
@@ -56,19 +58,7 @@ public class Task {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
+                ", type=" + type +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Task task = (Task) o;
-        return id == task.id && Objects.equals(title, task.title) && Objects.equals(description, task.description) && status == task.status;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, description, status);
     }
 }
