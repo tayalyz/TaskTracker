@@ -1,4 +1,4 @@
-//a. Получение списка всех задач.
+package service;//a. Получение списка всех задач.
 //b. Удаление всех задач.
 //c. Получение по идентификатору.
 //d. Создание. Сам объект должен передаваться в качестве параметра.
@@ -8,22 +8,28 @@
 //a. Получение списка всех подзадач определённого эпика.
 
 import exception.TaskNotFoundException;
+import model.Epic;
+import model.Subtask;
+import model.Task;
+import utils.Managers;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class TaskManagerImpl<T extends Task> implements TaskManager<T> {
+public class InMemoryTaskManager<T extends Task> implements TaskManager<T> {
     private static final AtomicInteger taskId = new AtomicInteger(0);
     private Map<Integer, T> tasks;
 
-    public TaskManagerImpl() {
+    public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
     }
 
     @Override
     public T getTaskById(int id) {
-        return Optional.ofNullable(tasks.get(id))
+        T task = Optional.ofNullable(tasks.get(id))
                 .orElseThrow(() -> new TaskNotFoundException("Task not found"));
+        Managers.getDefaultHistory().add(task); // TODO
+        return task;
     }
 
     @Override
@@ -54,7 +60,11 @@ public class TaskManagerImpl<T extends Task> implements TaskManager<T> {
 
     @Override
     public Optional<T> update(T task) {     // TODO
-        if (tasks.containsKey(task.getId())) {
+        if (tasks.containsKey(task.getId()) || getAllSubtasks().stream()
+                .anyMatch(subtask -> subtask.getId() == task.getId())) {
+            if (task instanceof Subtask) {
+                ((Subtask) task).getParent().updateStatus();
+            }
             tasks.put(task.getId(), task);
             return Optional.of(task);
         } else {

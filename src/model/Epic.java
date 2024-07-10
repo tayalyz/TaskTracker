@@ -1,6 +1,9 @@
+package model;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static model.Status.*;
 
 public class Epic extends Task {
     private Map<Integer, Subtask> subtasks;
@@ -44,9 +47,9 @@ public class Epic extends Task {
                 }
 
                 if (isInProgress || (isNew && isDone) ){
-                    newStatus = Status.IN_PROGRESS;
+                    newStatus = IN_PROGRESS;
                 } else {
-                    newStatus = isDone ? Status.DONE : Status.NEW;
+                    newStatus = isDone ? DONE : NEW;
                 }
             }
             this.status = newStatus;

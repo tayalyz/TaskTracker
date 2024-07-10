@@ -1,9 +1,16 @@
-import java.util.List;
+import model.Epic;
+import model.Status;
+import model.Subtask;
+import model.Task;
+import service.HistoryManager;
+import service.TaskManager;
+import utils.Managers;
+
 
 public class Main {
     public static void main(String[] args) {
-        TaskManager<Task> manager = new TaskManagerImpl<>();
-
+        TaskManager<Task> taskManager = Managers.getDefault();
+        HistoryManager<Task> historyManager = Managers.getDefaultHistory();
         Task task1 = new Task("111", "111");
         Task task2 = new Task("222", "222");
         Task task3 = new Task("234", "updated");
@@ -16,25 +23,39 @@ public class Main {
         Subtask subtask2 = new Subtask("2sub", "2sub", epic1);
         Subtask subtask3 = new Subtask("3sub", "3sub", epic2);
 
-        create(manager, task1, task2, epic1, epic2, subtask1, subtask2, subtask3);
+        create(taskManager, task1, task2, epic1, epic2, subtask1, subtask2, subtask3);
 
-        get(manager, epic1);
+        get(taskManager, epic1);
+        taskManager.getTaskById(1);
+        taskManager.getTaskById(1);
+        taskManager.getTaskById(3);
+        taskManager.getTaskById(2);  //
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(2);
+        System.out.println("History: " + historyManager.getHistory());
 
-        update(task1, manager, epic1);
+        update(task1, taskManager);
+
+        subtask1.setStatus(Status.IN_PROGRESS);
+        taskManager.update(subtask1);
+
         System.out.println("Updated task: " + task1 + "\nUpdated epic: " + epic1);
-        System.out.println(manager.getAllTasks());
+        System.out.println(taskManager.getAllTasks());
 
-        delete(manager);
-        manager.getAllTasks();
+        delete(taskManager);
+        taskManager.getAllTasks();
     }
 
-    private static void update(Task task1, TaskManager<Task> manager, Epic epic1) {
-        List<Subtask> list = manager.getSubTasks(epic1);
-        list.get(0).setStatus(Status.IN_PROGRESS);
-        list.get(1).setStatus(Status.DONE);
-        epic1.updateStatus();
-
+    private static void update(Task task1, TaskManager<Task> manager) {
         task1.setTitle("updatedTitle");
+        task1.setStatus(Status.DONE);
         manager.update(task1);
     }
 
