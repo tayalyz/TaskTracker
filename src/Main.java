@@ -14,6 +14,7 @@ public class Main {
         Task task1 = new Task("111", "111");
         Task task2 = new Task("222", "222");
         Task task3 = new Task("234", "updated");
+        Task task4 = new Task("234", "updated");
 
         Epic epic1 = new Epic("1epic", "1epic");
         Epic epic2 = new Epic("2epic", "2epic");
@@ -25,21 +26,20 @@ public class Main {
 
         create(taskManager, task1, task2, epic1, epic2, subtask1, subtask2, subtask3);
 
+        taskManager.add(task3);
+        taskManager.add(task4);
+
         get(taskManager, epic1);
         taskManager.getTaskById(1);
+        taskManager.getTaskById(8);
+        taskManager.getTaskById(9);
+        taskManager.getTaskById(2);
         taskManager.getTaskById(1);
         taskManager.getTaskById(3);
-        taskManager.getTaskById(2);  //
-        taskManager.getTaskById(2);
-        taskManager.getTaskById(2);
-        taskManager.getTaskById(2);
-        taskManager.getTaskById(2);
-        taskManager.getTaskById(2);
-        taskManager.getTaskById(2);
-        taskManager.getTaskById(2);
-        taskManager.getTaskById(2);
-        taskManager.getTaskById(2);
+
+        System.out.println();
         System.out.println("History: " + historyManager.getHistory());
+        System.out.println();
 
         update(task1, taskManager);
 
@@ -80,7 +80,7 @@ public class Main {
     }
 
     private static void get(TaskManager<Task> manager, Epic epic1) {
-        manager.getTaskById(1);
+        //manager.getTaskById(1);
         System.out.println("Subs of epic1: " + manager.getSubTasks(epic1));
         System.out.println();
         System.out.println("All tasks:" + manager.getAllTasks());
